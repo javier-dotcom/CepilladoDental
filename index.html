@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>¡A Cepillarse!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #b2ebf2, #81d4fa);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      color: #01579b;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    #instruction {
+      font-size: 1.8em;
+      margin-top: 20px;
+      min-height: 100px;
+      padding: 20px;
+      border-radius: 15px;
+      background: #ffffffaa;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn {
+      padding: 20px 30px;
+      margin: 10px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    #startButton {
+      background: #4caf50;
+      color: white;
+    }
+
+    #pauseButton {
+      background: #ff9800;
+      color: white;
+    }
+
+    #pauseButton:disabled,
+    #startButton:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #countdown {
+      font-size: 2.5em;
+      margin-top: 10px;
+      color: #d32f2f;
+      display: none;
+    }
+
+    #tooth-img {
+      margin-top: 20px;
+      width: 150px;
+      display: none;
+    }
+
+    #progress {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+
+    .tooth {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      background-image: url('diente-triste.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin: 2px;
+    }
+
+    .tooth.completed {
+      background-image: url('diente-feliz.png');
+      transform: scale(1.1);
+    }
+
+    @media screen and (max-width: 600px) {
+      #instruction {
+        font-size: 1.5em;
+      }
+      .btn {
+        font-size: 1em;
+      }
+      #countdown {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🦷 ¡A Cepillarse los Dientes!</h1>
+  <button id="startButton" class="btn">🟢 Comenzar</button>
+  <button id="pauseButton" class="btn" disabled>⏸️ Pausar</button>
+  <div id="instruction">¡Presiona comenzar para empezar!</div>
+  <div id="countdown">9</div>
+  <div id="progress"></div>
+  <img id="tooth-img" src="diente-triste.png" alt="Diente triste">
+
+  <audio id="bell" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
+
+  <script>
+    const zonas = [
+      "superior derecha por fuera",
+      "superior derecha que muerde",
+      "superior derecha por dentro",
+      "superior al frente por fuera",
+      "superior al frente que muerde",
+      "superior al frente por dentro",
+      "superior izquierda por fuera",
+      "superior izquierda que muerde",
+      "superior izquierda por dentro",
+      "inferior derecha por fuera",
+      "inferior derecha que muerde",
+      "inferior derecha por dentro",
+      "inferior al frente por fuera",
+      "inferior al frente que muerde",
+      "inferior al frente por dentro",
+      "inferior izquierda por fuera",
+      "inferior izquierda que muerde",
+      "inferior izquierda por dentro"
+    ];
+
+    const duracionZona = 9;
+    const bell = document.getElementById('bell');
+    const instruction = document.getElementById('instruction');
+    const startButton = document.getElementById('startButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const countdown = document.getElementById('countdown');
+    const toothImg = document.getElementById('tooth-img');
+    const progress = document.getElementById('progress');
+
+    let index = 0;
+    let enPausa = false;
+    let intervaloContador = null;
+
+    function renderProgress() {
+      progress.innerHTML = '';
+      for (let i = 0; i < zonas.length; i++) {
+        const span = document.createElement('span');
+        span.classList.add('tooth');
+        if (i < index) span.classList.add('completed');
+        progress.appendChild(span);
+      }
+    }
+
+    function hablar(texto, callback) {
+      const mensaje = new SpeechSynthesisUtterance(texto);
+      mensaje.lang = 'es-ES';
+      mensaje.rate = 0.7;
+      mensaje.pitch = 1.1;
+      speechSynthesis.cancel();
+      if (callback) mensaje.onend = callback;
+      speechSynthesis.speak(mensaje);
+    }
+
+    function iniciarZona() {
+      if (index >= zonas.length) {
+        instruction.textContent = "🎉 ¡Cepillado completo! ¡Muy bien!";
+        toothImg.src = "alegre.jpg";
+        renderProgress();
+        hablar("Cepillado completo. ¡Felicitaciones!");
+        startButton.disabled = false;
+        pauseButton.disabled = true;
+        return;
+      }
+
+      renderProgress();
+      toothImg.src = "trizte.jpg";
+
+      const texto = index === 0
+        ? `Vamos a comenzar con el cepillado. Empecemos por ${zonas[index]}`
+        : `Pasemos a la otra cara. ${zonas[index]}`;
+
+      instruction.textContent = texto;
+      hablar(texto, iniciarContador);
+    }
+
+    function iniciarContador() {
+      let tiempoRestante = duracionZona;
+      countdown.style.display = 'block';
+      toothImg.style.display = 'block';
+      countdown.textContent = tiempoRestante;
+
+      intervaloContador = setInterval(() => {
+        if (enPausa) return;
+        tiempoRestante--;
+        countdown.textContent = tiempoRestante;
+
+        if (tiempoRestante <= 0) {
+          clearInterval(intervaloContador);
+          countdown.style.display = 'none';
+          bell.play();
+          toothImg.src = "alegre.jpg";
+          setTimeout(() => {
+            toothImg.style.display = 'none';
+            index++;
+            renderProgress();
+            iniciarZona();
+          }, 1500);
+        }
+      }, 1000);
+    }
+
+    startButton.addEventListener('click', () => {
+      startButton.disabled = true;
+      pauseButton.disabled = false;
+      index = 0;
+      enPausa = false;
+      iniciarZona();
+    });
+
+    pauseButton.addEventListener('click', () => {
+      enPausa = !enPausa;
+      pauseButton.textContent = enPausa ? "▶️ Reanudar" : "⏸️ Pausar";
+    });
+  </script>
+</body>
+</html>
