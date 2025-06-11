@@ -60,38 +60,28 @@
     }
 
     #countdown {
+        margin: 0;
+        padding: 0;
       font-size: 2.5em;
-      margin-top: 10px;
+      /*margin-top: 10px;*/
       color: #d32f2f;
       display: none;
     }
 
-    #foam-effect {
-      width: 100px;
-      height: 100px;
-      margin: 20px auto;
-      display: none;
-      background: radial-gradient(circle at center, #ffffff88, #81d4fa88);
-      border-radius: 50%;
-      animation: bubble 1.2s infinite ease-in-out;
-    }
-
-    @keyframes bubble {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.9;
-      }
-      50% {
-        transform: scale(1.3);
-        opacity: 1;
-      }
-    }
+    
 
     #progress {
       font-size: 1.5em;
-      margin-top: 20px;
+      /*margin-top: 2px;*/
       word-wrap: break-word;
       overflow-wrap: break-word;
+    }
+
+    .tooth-img {
+      width: 28px;
+      height: 28px;
+      margin: 0 2px;
+      vertical-align: middle;
     }
 
     @media screen and (max-width: 600px) {
@@ -118,7 +108,7 @@
   <button id="pauseButton" class="btn" disabled>⏸️ Pausar</button>
   <div id="instruction">¡Presiona comenzar para empezar!</div>
   <div id="countdown">9</div>
-  <div id="foam-effect"></div>
+  <div id="brush-animation"></div>
   <div id="progress"></div>
 
   <audio id="bell" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
@@ -166,13 +156,13 @@
       "Y ahora, lo que sigue."
     ];
 
-    const duracionZona = 11;
+    const duracionZona = 9;
     const bell = document.getElementById('bell');
     const instruction = document.getElementById('instruction');
     const startButton = document.getElementById('startButton');
     const pauseButton = document.getElementById('pauseButton');
     const countdown = document.getElementById('countdown');
-    const foamEffect = document.getElementById('foam-effect');
+    const brushAnimation = document.getElementById('brush-animation');
     const progress = document.getElementById('progress');
 
     let index = 0;
@@ -180,16 +170,20 @@
     let intervaloContador = null;
 
     function renderProgress() {
-      let completados = '✅'.repeat(index);
-      let actual = index < zonas.length ? '🟨' : '';
-      let restantes = '⬜'.repeat(zonas.length - index - 1);
-      progress.textContent = `Zona ${index + 1}/${zonas.length} ${completados}${actual}${restantes}`;
+      progress.innerHTML = `Zona ${index + 1}/${zonas.length} <br>`;
+      for (let i = 0; i < zonas.length; i++) {
+        const img = document.createElement('img');
+        img.className = 'tooth-img';
+        img.src = i < index ? 'alegre.jpg' : 'trizte.jpg';
+        img.alt = i < index ? '😊' : '😟';
+        progress.appendChild(img);
+      }
     }
 
     function hablar(texto, callback) {
       const mensaje = new SpeechSynthesisUtterance(texto);
       mensaje.lang = 'es-ES';
-      mensaje.rate = 0.85;
+      mensaje.rate = 0.9;
       mensaje.pitch = 1.1;
       speechSynthesis.cancel();
       if (callback) mensaje.onend = callback;
@@ -199,7 +193,7 @@
     function iniciarZona() {
       if (index >= zonas.length) {
         instruction.textContent = "🎉 ¡Cepillado completo! ¡Muy bien!";
-        foamEffect.style.display = 'none';
+        brushAnimation.style.display = 'none';
         renderProgress();
         hablar("Cepillado completo. ¡Felicitaciones!");
         startButton.disabled = false;
@@ -208,7 +202,7 @@
       }
 
       renderProgress();
-      foamEffect.style.display = 'block';
+      brushAnimation.style.display = 'block';
 
       const texto = index === 0
         ? `Vamos a comenzar con el cepillado. Empecemos por ${zonas[index]}`
@@ -231,7 +225,7 @@
         if (tiempoRestante <= 0) {
           clearInterval(intervaloContador);
           countdown.style.display = 'none';
-          foamEffect.style.display = 'none';
+          brushAnimation.style.display = 'none';
           bell.play();
           setTimeout(() => {
             index++;
