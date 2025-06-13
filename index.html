@@ -13,12 +13,14 @@
       padding: 20px;
       text-align: center;
       color: #01579b;
+      overflow-x: hidden;
     }
 
     h1 {
       font-size: 2em;
       margin-bottom: 20px;
       color: white;
+      animation: fadeInDown 1s ease-in-out;
     }
 
     .btn {
@@ -29,6 +31,8 @@
       border-radius: 15px;
       cursor: pointer;
       transition: transform 0.2s ease;
+      animation: fadeInUp 1.2s ease forwards;
+      opacity: 0;
     }
 
     .btn:hover {
@@ -51,6 +55,30 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      animation: fadeInUp 1.5s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media screen and (max-width: 600px) {
@@ -66,22 +94,22 @@
   <h1>🦷 ¡A Cepillarse los Dientes!</h1>
 
   <div>
-    <p style="color:white; font-size: 1.5em;">¿Qué momento del día es?</p>
+    <p style="color:white; font-size: 1.5em; animation: fadeInDown 1.1s ease-in-out;">Elije el cepillado.</p>
 
-    <button class="btn momento-btn" onclick="location.href='cepillado1.html'">
+    <button class="btn momento-btn" style="animation-delay: 0.2s;" onclick="location.href='cepillado1.html'">
       ☀️ 1° Cepillado: Mañana
     </button>
-    <div class="explicacion">El cepillado matutino elimina bacterias acumuladas durante la noche y refresca tu aliento para el día.</div>
+    <div class="explicacion" style="animation-delay: 0.4s;">El cepillado matutino elimina bacterias acumuladas durante la noche y refresca tu aliento para el día.</div>
 
-    <button class="btn momento-btn" onclick="location.href='cepillado2.html'">
+    <button class="btn momento-btn" style="animation-delay: 0.6s;" onclick="location.href='cepillado2.html'">
       🌞 2° Cepillado: Mediodía
     </button>
-    <div class="explicacion">Después del almuerzo, ayuda a prevenir la formación de placa y caries.</div>
+    <div class="explicacion" style="animation-delay: 0.8s;">Después del almuerzo, ayuda a prevenir la formación de placa y caries.</div>
 
-    <button class="btn momento-btn" onclick="location.href='cepillado3.html'">
+    <button class="btn momento-btn" style="animation-delay: 1s;" onclick="location.href='cepillado3.html'">
       🌙 3° Cepillado: Noche
     </button>
-    <div class="explicacion">El cepillado nocturno es crucial: elimina restos de comida y protege tus dientes mientras duermes.</div>
+    <div class="explicacion" style="animation-delay: 1.2s;">El cepillado nocturno es crucial: elimina restos de comida y protege tus dientes mientras duermes.</div>
   </div>
 
 </body>
