@@ -39,6 +39,18 @@
       background-color: #0288d1;
       color: white;
       margin: 10px;
+      display: block;
+      max-width: 400px;
+      margin: 15px auto;
+    }
+
+    .explicacion {
+      color: white;
+      font-size: 1em;
+      margin-bottom: 25px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     @media screen and (max-width: 600px) {
@@ -55,9 +67,21 @@
 
   <div>
     <p style="color:white; font-size: 1.5em;">¿Qué momento del día es?</p>
-    <button class="btn momento-btn" onclick="location.href='cepillado1.html'">☀️ 1° Cepillado: Mañana</button>
-    <button class="btn momento-btn" onclick="location.href='cepillado2.html'">🌞 2° Cepillado: Mediodía</button>
-    <button class="btn momento-btn" onclick="location.href='cepillado3.html'">🌙 3° Cepillado: Noche</button>
+
+    <button class="btn momento-btn" onclick="location.href='cepillado1.html'">
+      ☀️ 1° Cepillado: Mañana
+    </button>
+    <div class="explicacion">El cepillado matutino elimina bacterias acumuladas durante la noche y refresca tu aliento para el día.</div>
+
+    <button class="btn momento-btn" onclick="location.href='cepillado2.html'">
+      🌞 2° Cepillado: Mediodía
+    </button>
+    <div class="explicacion">Después del almuerzo, ayuda a prevenir la formación de placa y caries.</div>
+
+    <button class="btn momento-btn" onclick="location.href='cepillado3.html'">
+      🌙 3° Cepillado: Noche
+    </button>
+    <div class="explicacion">El cepillado nocturno es crucial: elimina restos de comida y protege tus dientes mientras duermes.</div>
   </div>
 
 </body>
